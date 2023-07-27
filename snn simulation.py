@@ -26,7 +26,7 @@ def write_in_directory(directory_name, file_name, content):
 n_neurons = 100
 n_epochs = 1
 n_test = 10000
-n_train = 60000
+n_train = 5
 exc = 22.5
 inh=120
 theta_plus=0.05
