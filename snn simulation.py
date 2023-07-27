@@ -58,8 +58,6 @@ g_mins = params['g_min']
 g_maxs = params['g_max']
 names = params['filenames']
 
-print(params)
-
 
 # Create the directory if it doesn't exist
 create_directory()
@@ -85,8 +83,8 @@ for i in range(len(tau_pres)):
     
     accuracy = getAccuracy(n_neurons = 100,
                     n_epochs = 1, 
-                    n_test = 10000,
-                    n_train = 60000, 
+                    n_test = 1,
+                    n_train = 5, 
                     exc = 22.5,
                     inh=120,
                     theta_plus=0.05,
