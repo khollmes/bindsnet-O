@@ -25,7 +25,7 @@ def write_in_directory(directory_name, file_name, content):
 #hyperparameter to control the data 
 n_neurons = 100
 n_epochs = 1
-n_test = 10000
+n_test = 1
 n_train = 5
 exc = 22.5
 inh=120
