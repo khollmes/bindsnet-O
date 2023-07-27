@@ -4,7 +4,7 @@ from getSTDPParameterFromData import get_STDP_param_from_data
 import os
 import time
 from math import isnan
-
+print('not master')
 def create_directory(directory_name='logs'):
     # Create the directory if it doesn't exist
     if not os.path.exists(directory_name):
