@@ -23,14 +23,18 @@ def write_in_directory(directory_name, file_name, content):
 
 
 #hyperparameter to control the data 
-n_neurons = 100
-n_epochs = 1
-n_test = 1
-n_train = 5
-exc = 22.5
-inh=120
-theta_plus=0.05
-time=250
+n_neurons = 100 #number of neurons
+n_epochs = 1 #number of epoch
+n_test = 2 #number of images for testing
+n_train = 5 #number of images for training
+exc = 22.5 #excitatory to inhibitatory weight connection
+inh=120 #inhibitatory to excitatory weight connection
+theta_plus=0.05 # increase of membran voltage per spike
+time=250 # time of image exposition
+standard_deviation = 0.0 #deviation as a percentage of mean 
+nu_post =1e-2 #learning rate post
+nu_pre= 1e-4 # learning rate pre
+
 progress_interval=250
 update_interval =4000
 
@@ -81,16 +85,16 @@ for i in range(len(tau_pres)):
         break
     print(f'get accuracy for the fit issued from the file: {name}')
     
-    accuracy = getAccuracy(n_neurons = 100,
-                    n_epochs = 1, 
-                    n_test = 1,
-                    n_train = 5, 
-                    exc = 22.5,
-                    inh=120,
-                    theta_plus=0.05,
-                    time=250,
-                    progress_interval=250,
-                    update_interval =4000,
+    accuracy = getAccuracy(n_neurons = n_neurons,
+                    n_epochs = n_epochs, 
+                    n_test =n_test,
+                    n_train = n_train, 
+                    exc = exc,
+                    inh=inh,
+                    theta_plus=theta_plus,
+                    time=time,
+                    progress_interval=progress_interval,
+                    update_interval =update_interval,
                     train = train,
                     plot=plot,
                     gpu = gpu,
@@ -100,9 +104,9 @@ for i in range(len(tau_pres)):
                     A_post = A_post,
                     g_max = g_max,
                     g_min =g_min,
-                    standard_deviation = 0.0,
-                    nu_pre = 1e-4,
-                    nu_post=1e-2)
+                    standard_deviation =standard_deviation,
+                    nu_pre = nu_pre,
+                    nu_post=nu_post)
     file_content = f"Accuracy for file: {name}\n"
     file_content += f'''n_neurons = {n_neurons}\n
                     n_train = {n_train}\n
