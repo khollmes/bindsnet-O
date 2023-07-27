@@ -98,6 +98,9 @@ def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse n
                 print("then change the value of the parameter linear_regression_gmin and linear_regression_gmax to the value you see.")
                 print(f"linear_regression_gmin: {linear_regression_gmin} S, and linear_regression_gmax: {linear_regression_gmax} S")
                 print()
+            else:
+                print("you are using the curve fit method for fitting the curve it uses a Levenberg Marquardt algorithm which can be non converging toward a solution")
+                print("Make sure you define well the parameter p0 which is the first guess of the algorithm to get an R2 score that is good enough")
             A_post = []
             A_pre = []
             tau_post = []
@@ -153,8 +156,8 @@ def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse n
             ApostList.append(A_post)
             ApreList.append(A_pre)
             names.append(filename)         
-            print('stdp pre from depression: {:.2E} + {:.2E} * exp(-x/{:.2f})'.format(g_min,A_pre,tau_pre))
-            print('stdp post from potentiation: {:.2E} {:.2E} * exp(-x/{:.2f})'.format(g_max,A_post,tau_post))
+            print('stdp pre equation: {:.2E} + {:.2E} * exp(-x/{:.2f})'.format(g_min,A_pre,tau_pre))
+            print('stdp post equation: {:.2E} {:.2E} * exp(-x/{:.2f})'.format(g_max,A_post,tau_post))
     return {'g_min': g_mins,
              'g_max':g_maxs,
              'tau_pre':taupreList,
