@@ -117,8 +117,8 @@ def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse n
             for e in potdep:
                 #Fit the data 
                 if useLinearRegressionMethod:
-                    ys = np.log(np.abs(calculate_derivative(e)))
-                    a, b = np.polyfit(x,ys, 1)
+                    dy = np.log(np.abs(calculate_derivative(e)))
+                    a, b = np.polyfit(x,dy, 1)
                     if potentiation:
                         A_post.append(np.exp(b))
                         tau_post.append(-1/a)
@@ -128,8 +128,12 @@ def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse n
                         tau_pre.append(-1/a)
                         g_max.append(linear_regression_gmax)
                 else: 
-                    p = [4e-5,(1e-6 if potentiation else -1e-6),-1,100]
-                    _,r2,param =testEq(expF,x,e,p)
+                    r2 = 0
+                    p0 = [4e-5,(1e-6 if potentiation else -1e-6),-1,100]
+                    while r2<0.95:
+                        p0 =10*p0
+                        _,r2,param =testEq(expF,x,e,p0)
+                        print(r2)
                     if potentiation:
                         A_post.append(param[0])
                         tau_post.append(param[1])
