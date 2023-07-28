@@ -184,8 +184,6 @@ def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse n
                     if plot:
                         plt.scatter(x,potdep[e],label='data')
                         plt.plot(x,np.exp(-potdep[e]/param[1])*param[0]+param[2],label = 'fit')
-                        print('shouldShow')
-                        plt.show()
                 potentiation= not potentiation
 
             g_min = np.mean(g_min)
@@ -209,7 +207,6 @@ def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse n
     plt.grid()
     plt.legend()
     plt.savefig('fits for simulation.png',transparent = True)
-    plt.show()
     return {'g_min': g_mins,
              'g_max':g_maxs,
              'tau_pre':taupreList,
