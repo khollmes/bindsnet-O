@@ -62,7 +62,7 @@ def testEq(f,x,y,p=[]):
 
 
 def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse number', cn= 'Conductance',
-            reduceDataSize = 15,filterOn=True,useLinearRegressionMethod= True):
+            reduceDataSize = 15,filterOn=True,useLinearRegressionMethod= True, useSTDP =True):
     # loop over all files in the directory
     taupreList = []
     taupostList =[]
@@ -92,6 +92,9 @@ def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse n
             potentiation = isPotentiation(potdep[0])
             linear_regression_gmin = 20e-6
             linear_regression_gmax = 40e-6
+            if useSTDP:
+                print("you are using the STDP mode")
+                print("this means that your data are the stdp")
             if useLinearRegressionMethod:
                 print()
                 print("You are using the linear regression method as we derive the data first gmin and gmax cannot be determine you have to enter them yourself gmin is the minimum value of the conductance respectively gmax is the maximum")
@@ -116,8 +119,8 @@ def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse n
                     potdep[e] = savgol_filter(potdep[e], filterParameter, 2)
             for e in potdep:
                 #Fit the data 
-                if useLinearRegressionMethod:
-                    dy = np.log(np.abs(calculate_derivative(e)))
+                if useSTDP:
+                    dy = np.log(np.abs(e))
                     a, b = np.polyfit(x,dy, 1)
                     if potentiation:
                         A_post.append(np.exp(b))
@@ -127,21 +130,33 @@ def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse n
                         A_pre.append(np.exp(b))
                         tau_pre.append(-1/a)
                         g_max.append(linear_regression_gmax)
-                else: 
-                    r2 = 0
-                    p0 = [4e-5,(1e-6 if potentiation else -1e-6),-1,100]
-                    while r2<0.95:
-                        p0 =10*p0
-                        _,r2,param =testEq(expF,x,e,p0)
-                        print(r2)
-                    if potentiation:
-                        A_post.append(param[0])
-                        tau_post.append(param[1])
-                        g_min.append(param[2])
-                    else:
-                        A_pre.append(param[0])
-                        tau_pre.append(param[1])
-                        g_max.append(param[2])
+                else:
+                    if useLinearRegressionMethod:
+                        dy = np.log(np.abs(calculate_derivative(e)))
+                        a, b = np.polyfit(x,dy, 1)
+                        if potentiation:
+                            A_post.append(np.exp(b))
+                            tau_post.append(-1/a)
+                            g_min.append(linear_regression_gmin)
+                        else:
+                            A_pre.append(np.exp(b))
+                            tau_pre.append(-1/a)
+                            g_max.append(linear_regression_gmax)
+                    else: 
+                        r2 = 0
+                        p0 = [4e-5,(1e-6 if potentiation else -1e-6),-1,100]
+                        while r2<0.95:
+                            p0 =10*p0
+                            _,r2,param =testEq(expF,x,e,p0)
+                            print(r2)
+                        if potentiation:
+                            A_post.append(param[0])
+                            tau_post.append(param[1])
+                            g_min.append(param[2])
+                        else:
+                            A_pre.append(param[0])
+                            tau_pre.append(param[1])
+                            g_max.append(param[2])
                 potentiation= not potentiation
 
             g_min = np.mean(g_min)
