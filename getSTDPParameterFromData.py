@@ -82,7 +82,7 @@ def find_suitable_p0(func, x_data, y_data, num_iterations=2000):
         modified_p0 = np.copy(p0)
 
         # Modify the chosen element
-        modified_p0[i] += inc[i] * step
+        modified_p0[i] += inc[i] * 10
 
         # Evaluate the R2 score for the modified 'p0'
         r2_score = fit_and_evaluate(modified_p0, func, x_data, y_data)
