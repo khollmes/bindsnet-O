@@ -71,7 +71,7 @@ def fit_and_evaluate(p0, func, x_data, y_data):
 
 def find_suitable_p0(func, x_data, y_data, num_iterations=2000):
     # Initial guess for 'p0'
-    p0 = [0.52113712 0.57109374 0.31015724 1.11550063]
+    p0 = [0.52113712, 0.57109374, 0.31015724, 1.11550063]
     
     for _ in range(num_iterations):
         # Make a copy of the current 'p0' for modification
