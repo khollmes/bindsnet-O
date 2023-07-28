@@ -84,7 +84,7 @@ def find_suitable_p0(func, x_data, y_data, num_iterations=2000):
         increment = np.random.choice([-1, 1])
 
         # Modify the chosen element
-        modified_p0[idx] += increment * 0.1  # Adjust the step size as needed
+        modified_p0[idx] += increment * 0.3  # Adjust the step size as needed
 
         # Evaluate the R2 score for the modified 'p0'
         r2_score = fit_and_evaluate(modified_p0, func, x_data, y_data)
