@@ -100,7 +100,6 @@ def find_suitable_p0(func, x_data, y_data, num_iterations=2000):
         i+=1
         if i == len(p0):
             i =0
-        print(inc)
     return p0
 
 def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse number', cn= 'Conductance',
