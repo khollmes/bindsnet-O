@@ -172,8 +172,9 @@ def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse n
                         tau_pre.append(-1/a)
                         g_max.append(linear_regression_gmax)
                 else: 
+                    print(e)
                     p0 = find_suitable_p0(expF, x, potdep[e])
-                    print(f'pO used for the iteration{e}: {p0}')
+                    print(f'pO used for the iteration {e}: {p0}')
                     _,r2,param =testEq(expF,x,potdep[e],p0)
                     print(f'r2: {r2}')
                     if potentiation:
