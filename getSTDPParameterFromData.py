@@ -91,7 +91,7 @@ def find_suitable_p0(func, x_data, y_data, num_iterations=2000):
             inc[i]*=2
             p0 = modified_p0
         else: 
-            inc[i] *= -1/2
+            inc[i] *= -1/3
         if r2_score> 0.95:
             return p0
         i+=1
