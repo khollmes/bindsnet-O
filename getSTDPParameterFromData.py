@@ -75,6 +75,7 @@ def find_suitable_p0(func, x_data, y_data, num_iterations=2000):
     i =0 
     inc = [1,1,1,1]
     step = 0.3
+    last = 0.0
     for _ in range(num_iterations):
         
         # Make a copy of the current 'p0' for modification
@@ -87,9 +88,10 @@ def find_suitable_p0(func, x_data, y_data, num_iterations=2000):
         r2_score = fit_and_evaluate(modified_p0, func, x_data, y_data)
 
         # Update 'p0' if the modified version leads to an improvement in R2 score
-        if r2_score > fit_and_evaluate(p0, func, x_data, y_data):
-            
+        if r2_score > last:
+            print(r2_score)
             p0 = modified_p0
+            last = r2_score
         else: 
             if inc[i]<0:
                 inc[i] += 0.1
