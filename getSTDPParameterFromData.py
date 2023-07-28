@@ -72,28 +72,31 @@ def fit_and_evaluate(p0, func, x_data, y_data):
 def find_suitable_p0(func, x_data, y_data, num_iterations=2000):
     # Initial guess for 'p0'
     p0 = [0.52113712, 0.57109374, 0.31015724, 1.11550063]
-    
+    i =0 
+    inc = [1,1,1,1]
+    step = 0.3
     for _ in range(num_iterations):
+        
         # Make a copy of the current 'p0' for modification
         modified_p0 = np.copy(p0)
 
-        # Choose a random index to modify
-        idx = np.random.randint(0, len(p0))
-
-        # Decide whether to increase or decrease the element at the chosen index
-        increment = np.random.choice([-1, 1])
-
         # Modify the chosen element
-        modified_p0[idx] += increment * 0.3  # Adjust the step size as needed
+        modified_p0[i] += inc[i] * step
 
         # Evaluate the R2 score for the modified 'p0'
         r2_score = fit_and_evaluate(modified_p0, func, x_data, y_data)
 
         # Update 'p0' if the modified version leads to an improvement in R2 score
         if r2_score > fit_and_evaluate(p0, func, x_data, y_data):
+            inc[i]*=2
             p0 = modified_p0
+        else: 
+            inc[i] *= -1/2
         if r2_score> 0.95:
             return p0
+        i+=1
+        if i == len(p0):
+            i =0
     return p0
 
 def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse number', cn= 'Conductance',
