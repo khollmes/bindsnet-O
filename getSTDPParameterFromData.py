@@ -185,7 +185,7 @@ def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse n
                         g_max.append(linear_regression_gmax)
                 else: 
                     if potentiation:
-                        p0 = grid_search_curve_fit(expF, x, potdep[e],[(0,1),(0,300),(0,1)],[1e-6,1e-1,1e-6])
+                        p0 = grid_search_curve_fit(expF, x, potdep[e],[(0,1),(0,300),(0,1)],[1e-1,1e-1,1e-1])
                         print(f'pO used for the iteration {e}: {p0}')
                         _,r2,param =testEq(expF,x,potdep[e],p0)
                         print(f'r2: {r2}')
@@ -193,7 +193,7 @@ def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse n
                         tau_post.append(param[1])
                         g_min.append(param[2])
                     else:
-                        p0 = grid_search_curve_fit(expF, x, potdep[e],[(-1,0),(0,300),(0,1)],[1e-6,1e-1,1e-6])
+                        p0 = grid_search_curve_fit(expF, x, potdep[e],[(-1,0),(0,300),(0,1)],[1e-1,1e-1,1e-1])
                         print(f'pO used for the iteration {e}: {p0}')
                         _,r2,param =testEq(expF,x,potdep[e],p0)
                         print(f'r2: {r2}')
