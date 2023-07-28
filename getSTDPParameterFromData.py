@@ -184,6 +184,7 @@ def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse n
                     if plot:
                         plt.scatter(x,potdep[e],label='data')
                         plt.plot(x,np.exp(-potdep[e]/param[1])*param[0]+param[2],label = 'fit')
+                        print('shouldShow')
                         plt.show()
                 potentiation= not potentiation
 
