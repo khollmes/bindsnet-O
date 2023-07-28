@@ -68,41 +68,49 @@ def fit_and_evaluate(p0, func, x_data, y_data):
     r2 = r2_score(y_data, y_pred)
 
     return r2
+import numpy as np
+from scipy.optimize import curve_fit
 
-def find_suitable_p0(func, x_data, y_data, num_iterations=2000):
-    # Initial guess for 'p0'
-    p0 = [0.52113712, 0.57109374, 0.31015724, 1.11550063]
-    i =0 
-    inc = [1,1,1,1]
-    step = 0.3
-    last = 0.0
-    for _ in range(num_iterations):
-        
-        # Make a copy of the current 'p0' for modification
-        modified_p0 = np.copy(p0)
+def grid_search_curve_fit(func, xdata, ydata, p0_ranges, step_sizes):
+    """
+    Perform a grid search to find the optimal initial guess (p0) for curve_fit.
 
-        # Modify the chosen element
-        modified_p0[i] += inc[i] * 10
+    Parameters:
+        func (callable): The model function to fit. It should have the signature func(x, *params).
+        xdata (array_like): The x data points.
+        ydata (array_like): The y data points.
+        p0_ranges (list of tuples): Each tuple represents the (min, max) range for each parameter in p0.
+        step_sizes (list): Step sizes for each parameter in p0.
 
-        # Evaluate the R2 score for the modified 'p0'
-        r2_score = fit_and_evaluate(modified_p0, func, x_data, y_data)
+    Returns:
+        optimal_p0 (tuple): The optimal initial guess (p0) for curve_fit.
+    """
+    def generate_combinations(param_ranges, steps):
+        return np.meshgrid(*[np.arange(min_val, max_val, step) for (min_val, max_val), step in zip(param_ranges, steps)])
 
-        # Update 'p0' if the modified version leads to an improvement in R2 score
-        if r2_score > last:
-            print(r2_score)
-            p0 = modified_p0
-            last = r2_score
-        else: 
-            if inc[i]<0:
-                inc[i] += 0.1
-            else:
-                inc[i] -=0.1
-        if r2_score> 0.95:
-            return p0
-        i+=1
-        if i == len(p0):
-            i =0
-    return p0
+    p0_combinations = generate_combinations(p0_ranges, step_sizes)
+    num_combinations = np.prod([len(param_range) for param_range in p0_combinations])
+
+    best_cost = float('inf')
+    optimal_p0 = None
+
+    for i in range(num_combinations):
+        p0 = tuple(p0_combinations[param_idx][i] for param_idx in range(len(p0_combinations)))
+
+        try:
+            params, _ = curve_fit(func, xdata, ydata, p0=p0)
+            y_fit = func(xdata, *params)
+            cost = np.sum((ydata - y_fit)**2)
+            if cost < best_cost:
+                best_cost = cost
+                optimal_p0 = p0
+        except RuntimeError:
+            # Ignore RuntimeError (e.g., due to non-convergence) and continue with the next combination.
+            pass
+
+    return optimal_p0
+
+
 
 def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse number', cn= 'Conductance',
             reduceDataSize = 15,filterOn=True,useLinearRegressionMethod= True,plot=True):
@@ -176,16 +184,19 @@ def get_STDP_param_from_data(dir_path = os.path.expanduser("~/data"),pn='Pulse n
                         tau_pre.append(-1/a)
                         g_max.append(linear_regression_gmax)
                 else: 
-                    print(e)
-                    p0 = find_suitable_p0(expF, x, potdep[e])
-                    print(f'pO used for the iteration {e}: {p0}')
-                    _,r2,param =testEq(expF,x,potdep[e],p0)
-                    print(f'r2: {r2}')
                     if potentiation:
+                        p0 = grid_search_curve_fit(expF, x, potdep[e],[(0,1),(0,300),(0,1)],[1e-6,1e-1,1e-6])
+                        print(f'pO used for the iteration {e}: {p0}')
+                        _,r2,param =testEq(expF,x,potdep[e],p0)
+                        print(f'r2: {r2}')
                         A_post.append(param[0])
                         tau_post.append(param[1])
                         g_min.append(param[2])
                     else:
+                        p0 = grid_search_curve_fit(expF, x, potdep[e],[(-1,0),(0,300),(0,1)],[1e-6,1e-1,1e-6])
+                        print(f'pO used for the iteration {e}: {p0}')
+                        _,r2,param =testEq(expF,x,potdep[e],p0)
+                        print(f'r2: {r2}')
                         A_pre.append(param[0])
                         tau_pre.append(param[1])
                         g_max.append(param[2])
